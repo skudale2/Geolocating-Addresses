@@ -1,0 +1,35 @@
+---
+title: "GeoAddressMaitri"
+output: html_document
+date: "2023-11-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidygeocoder)
+library(sf)
+library(mapview)
+library(readxl)
+
+install.packages("tidygeocoder")
+```
+
+
+```{r}
+addresses <- read_xlsx("Downloads/NAWC Report.xlsx")
+addresses$fulladd <- paste(addresses$Address, addresses$City, addresses$State)
+
+geo_addresses <- addresses %>% 
+  tidygeocoder::geocode(
+    address = fulladd,
+    method = "osm"
+  )
+
+write_csv(geo_addresses, "Downloads/NAWC_geo.csv")
+write_sf(geo_addresses, "Downloads/NAWC_geo.shp")
+```
+
